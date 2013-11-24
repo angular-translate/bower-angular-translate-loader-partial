@@ -5,7 +5,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', [fu
       this.tables = {};
     }
     Part.prototype.parseUrl = function (urlTemplate, targetLang) {
-      return urlTemplate.replace('{part}', this.name).replace('{lang}', targetLang);
+      return urlTemplate.replace(/\{part\}/g, this.name).replace(/\{lang\}/g, targetLang);
     };
     Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler) {
       var deferred = $q.defer();
@@ -63,13 +63,33 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', [fu
       if (!hasPart(name)) {
         parts[name] = new Part(name);
       }
+      parts[name].isActive = true;
+      return this;
+    };
+    this.setPart = function (lang, part, table) {
+      if (!isStringValid(lang)) {
+        throw new TypeError('Invalid type of a first argument, a non-empty string expected.');
+      }
+      if (!isStringValid(part)) {
+        throw new TypeError('Invalid type of a second argument, a non-empty string expected.');
+      }
+      if (typeof table !== 'object' || table === null) {
+        throw new TypeError('Invalid type of a third argument, an object expected.');
+      }
+      if (!hasPart(part)) {
+        parts[part] = new Part(part);
+        parts[part].isActive = false;
+      }
+      parts[part].tables[lang] = table;
       return this;
     };
     this.deletePart = function (name) {
       if (!isStringValid(name)) {
         throw new TypeError('Invalid type of a first argument, a non-empty string expected.');
       }
-      delete parts[name];
+      if (hasPart(name)) {
+        parts[name].isActive = false;
+      }
       return this;
     };
     this.isPartAvailable = isPartAvailable;
