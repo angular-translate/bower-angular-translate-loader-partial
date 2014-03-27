@@ -4,16 +4,19 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     this.isActive = true;
     this.tables = {};
   }
-  Part.prototype.parseUrl = function (urlTemplate, targetLang) {
-    return urlTemplate.replace(/\{part\}/g, this.name).replace(/\{lang\}/g, targetLang);
+  Part.prototype.parseUrl = function ($compile, urlTemplate, targetLang) {
+    var scope = {};
+    scope.part = this.name;
+    scope.lang = targetLang;
+    return $compile(urlTemplate)(scope);
   };
-  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler) {
+  Part.prototype.getTable = function (lang, $q, $http, $compile, urlTemplate, errorHandler) {
     var deferred = $q.defer();
     if (!this.tables[lang]) {
       var self = this;
       $http({
         method: 'GET',
-        url: this.parseUrl(urlTemplate, lang)
+        url: this.parseUrl($compile, urlTemplate, lang)
       }).success(function (data) {
         self.tables[lang] = data;
         deferred.resolve(data);
@@ -100,7 +103,8 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     '$injector',
     '$q',
     '$http',
-    function ($rootScope, $injector, $q, $http) {
+    '$compile',
+    function ($rootScope, $injector, $q, $http, $compile) {
       var service = function (options) {
         if (!isStringValid(options.key)) {
           throw new TypeError('Unable to load data, a key is not a non-empty string.');
@@ -121,7 +125,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         }
         for (var part in parts) {
           if (hasPart(part) && parts[part].isActive) {
-            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler).then(addTablePart));
+            loaders.push(parts[part].getTable(options.key, $q, $http, $compile, options.urlTemplate, errorHandler).then(addTablePart));
           }
         }
         if (loaders.length) {
