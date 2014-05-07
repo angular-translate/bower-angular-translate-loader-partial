@@ -18,8 +18,9 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
       var self = this;
       $http({
         method: jsonp ? 'JSONP' : 'GET',
-        url: this.parseUrl(urlTemplate, lang)
+        url: jsonp ? this.parseUrl(urlTemplate, lang) + '&callback=JSON_CALLBACK' : this.parseUrl(urlTemplate, lang)
       }).success(function (data) {
+        console.log(data);
         self.tables[lang] = data;
         deferred.resolve(data);
       }).error(function () {
