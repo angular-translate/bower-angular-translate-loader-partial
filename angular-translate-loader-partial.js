@@ -12,15 +12,14 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
   Part.prototype.parseUrl = function (urlTemplate, targetLang) {
     return urlTemplate.replace(/\{part\}/g, this.name).replace(/\{lang\}/g, targetLang);
   };
-  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler, jsonp) {
+  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler) {
     var deferred = $q.defer();
     if (!this.tables[lang]) {
       var self = this;
       $http({
-        method: jsonp ? 'JSONP' : 'GET',
-        url: jsonp ? this.parseUrl(urlTemplate, lang) + '&callback=JSON_CALLBACK' : this.parseUrl(urlTemplate, lang)
+        method: (urlTemplate.indexOf("callback=") > -1) ? 'JSONP' : 'GET',
+        url: this.parseUrl(urlTemplate, lang)
       }).success(function (data) {
-        console.log(data);
         self.tables[lang] = data;
         deferred.resolve(data);
       }).error(function () {
@@ -127,7 +126,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         }
         for (var part in parts) {
           if (hasPart(part) && parts[part].isActive) {
-            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler, options.jsonp).then(addTablePart));
+            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler).then(addTablePart));
           }
         }
         if (loaders.length) {
