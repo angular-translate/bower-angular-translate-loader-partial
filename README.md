@@ -24,6 +24,8 @@ $ bower install angular-translate-loader-partial
 
 #### Use jsonp
 
+just append `callback=JSON_CALLBACK` to the end of urlTemplate.
+
 ```javascript
 $translateProvider.useLoader('$translatePartialLoader', {
   urlTemplate: 'https://your-translations-site/translation/{part}?locale={lang}&callback=JSON_CALLBACK'
