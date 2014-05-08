@@ -12,12 +12,12 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
   Part.prototype.parseUrl = function (urlTemplate, targetLang) {
     return urlTemplate.replace(/\{part\}/g, this.name).replace(/\{lang\}/g, targetLang);
   };
-  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler) {
+  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler, method) {
     var deferred = $q.defer();
     if (!this.tables[lang]) {
       var self = this;
       $http({
-        method: (urlTemplate.indexOf("callback=") > -1) ? 'JSONP' : 'GET',
+        method: method || 'GET',
         url: this.parseUrl(urlTemplate, lang)
       }).success(function (data) {
         self.tables[lang] = data;
@@ -126,7 +126,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         }
         for (var part in parts) {
           if (hasPart(part) && parts[part].isActive) {
-            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler).then(addTablePart));
+            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler, options.method).then(addTablePart));
           }
         }
         if (loaders.length) {
