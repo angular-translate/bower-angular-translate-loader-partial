@@ -7,3 +7,28 @@ angular-translate-loader-partial bower package
 ````
 $ bower install angular-translate-loader-partial
 ````
+
+### How to use
+
+```javascript
+.config(['$translateProvider', '$translatePartialLoaderProvider', function ($translateProvider, $translatePartialLoaderProvider) {
+
+  $translatePartialLoaderProvider.addPart('home');
+  
+  $translateProvider.useLoader('$translatePartialLoader', {
+    urlTemplate: 'translation/{part}?locale={lang}'
+  });
+
+}]);
+```
+
+#### Use jsonp
+
+just pass the method option.
+
+```javascript
+$translateProvider.useLoader('$translatePartialLoader', {
+  urlTemplate: 'https://your-translations-site/translation/{part}?locale={lang}&callback=JSON_CALLBACK',
+  method: 'JSONP'
+});
+```
