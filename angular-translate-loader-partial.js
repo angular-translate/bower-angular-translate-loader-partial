@@ -1,5 +1,5 @@
 /*!
- * angular-translate - v2.1.0 - 2014-04-02
+ * angular-translate - v2.2.0 - 2014-06-03
  * http://github.com/PascalPrecht/angular-translate
  * Copyright (c) 2014 ; Licensed MIT
  */
@@ -56,7 +56,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     for (var property in src) {
       if (src[property] && src[property].constructor && src[property].constructor === Object) {
         dst[property] = dst[property] || {};
-        arguments.callee(dst[property], src[property]);
+        deepExtend(dst[property], src[property]);
       } else {
         dst[property] = src[property];
       }
