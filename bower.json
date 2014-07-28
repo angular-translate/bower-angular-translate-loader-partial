@@ -3,6 +3,6 @@
   "version": "2.0.1",
   "main": "./angular-translate-loader-partial.js",
   "dependencies": {
-    "angular-translate": "2.2.0"
+    "angular-translate": "2.2.x"
   }
 }
