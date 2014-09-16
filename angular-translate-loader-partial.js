@@ -1,5 +1,5 @@
 /*!
- * angular-translate - v2.2.0 - 2014-06-03
+ * angular-translate - v2.3.0 - 2014-09-16
  * http://github.com/PascalPrecht/angular-translate
  * Copyright (c) 2014 ; Licensed MIT
  */
@@ -41,7 +41,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
   };
   var parts = {};
   function hasPart(name) {
-    return parts.hasOwnProperty(name);
+    return Object.prototype.hasOwnProperty.call(parts, name);
   }
   function isStringValid(str) {
     return angular.isString(str) && str !== '';
