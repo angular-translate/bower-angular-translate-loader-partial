@@ -1,5 +1,5 @@
 /*!
- * angular-translate - v2.3.0 - 2014-09-16
+ * angular-translate - v2.4.0 - 2014-09-22
  * http://github.com/PascalPrecht/angular-translate
  * Copyright (c) 2014 ; Licensed MIT
  */
@@ -12,14 +12,14 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
   Part.prototype.parseUrl = function (urlTemplate, targetLang) {
     return urlTemplate.replace(/\{part\}/g, this.name).replace(/\{lang\}/g, targetLang);
   };
-  Part.prototype.getTable = function (lang, $q, $http, urlTemplate, errorHandler) {
+  Part.prototype.getTable = function (lang, $q, $http, $httpOptions, urlTemplate, errorHandler) {
     var deferred = $q.defer();
     if (!this.tables[lang]) {
       var self = this;
-      $http({
+      $http(angular.extend({}, $httpOptions, {
         method: 'GET',
         url: this.parseUrl(urlTemplate, lang)
-      }).success(function (data) {
+      })).success(function (data) {
         self.tables[lang] = data;
         deferred.resolve(data);
       }).error(function () {
@@ -105,7 +105,8 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     '$injector',
     '$q',
     '$http',
-    function ($rootScope, $injector, $q, $http) {
+    '$translate',
+    function ($rootScope, $injector, $q, $http, $translate) {
       var service = function (options) {
         if (!isStringValid(options.key)) {
           throw new TypeError('Unable to load data, a key is not a non-empty string.');
@@ -126,7 +127,8 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         }
         for (var part in parts) {
           if (hasPart(part) && parts[part].isActive) {
-            loaders.push(parts[part].getTable(options.key, $q, $http, options.urlTemplate, errorHandler).then(addTablePart));
+            loaders.push(parts[part].getTable(options.key, $q, $http, options.$http, options.urlTemplate, errorHandler).then(addTablePart));
+            parts[part].urlTemplate = options.urlTemplate;
           }
         }
         if (loaders.length) {
@@ -169,6 +171,15 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         if (hasPart(name)) {
           var wasActive = parts[name].isActive;
           if (removeData) {
+            var cache = $translate.loaderCache();
+            if (typeof cache === 'string') {
+              cache = $injector.get(cache);
+            }
+            if (typeof cache === 'object') {
+              angular.forEach(parts[name].tables, function (value, key) {
+                cache.remove(parts[name].parseUrl(parts[name].urlTemplate, key));
+              });
+            }
             delete parts[name];
           } else {
             parts[name].isActive = false;
