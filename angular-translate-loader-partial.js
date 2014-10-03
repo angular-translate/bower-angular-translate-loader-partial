@@ -1,5 +1,5 @@
 /*!
- * angular-translate - v2.4.0 - 2014-09-22
+ * angular-translate - v2.4.1 - 2014-10-03
  * http://github.com/PascalPrecht/angular-translate
  * Copyright (c) 2014 ; Licensed MIT
  */
@@ -16,10 +16,10 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     var deferred = $q.defer();
     if (!this.tables[lang]) {
       var self = this;
-      $http(angular.extend({}, $httpOptions, {
+      $http(angular.extend({
         method: 'GET',
         url: this.parseUrl(urlTemplate, lang)
-      })).success(function (data) {
+      }, $httpOptions)).success(function (data) {
         self.tables[lang] = data;
         deferred.resolve(data);
       }).error(function () {
