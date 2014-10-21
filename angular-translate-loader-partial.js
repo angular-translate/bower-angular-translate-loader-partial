@@ -1,6 +1,6 @@
 /*!
- * angular-translate - v2.4.1 - 2014-10-03
- * http://github.com/PascalPrecht/angular-translate
+ * angular-translate - v2.4.2 - 2014-10-21
+ * http://github.com/angular-translate/angular-translate
  * Copyright (c) 2014 ; Licensed MIT
  */
 angular.module('pascalprecht.translate').provider('$translatePartialLoader', function () {
@@ -105,8 +105,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
     '$injector',
     '$q',
     '$http',
-    '$translate',
-    function ($rootScope, $injector, $q, $http, $translate) {
+    function ($rootScope, $injector, $q, $http) {
       var service = function (options) {
         if (!isStringValid(options.key)) {
           throw new TypeError('Unable to load data, a key is not a non-empty string.');
@@ -171,6 +170,7 @@ angular.module('pascalprecht.translate').provider('$translatePartialLoader', fun
         if (hasPart(name)) {
           var wasActive = parts[name].isActive;
           if (removeData) {
+            var $translate = $injector.get('$translate');
             var cache = $translate.loaderCache();
             if (typeof cache === 'string') {
               cache = $injector.get(cache);
