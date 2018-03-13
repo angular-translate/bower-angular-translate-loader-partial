@@ -384,7 +384,7 @@ function $translatePartialLoader() {
               } else {
                 // the part structure has been changed again while loading (retried one)
                 // because this could an infinite loop, this will not load another one again
-                $log.warn('The partial loader has detected a multiple structure change (with addPort/removePart) ' +
+                $log.warn('The partial loader has detected a multiple structure change (with addPart/removePart) ' +
                   'while loading translations. You should consider using promises of $translate.use(lang) and ' +
                   '$translate.refresh(). Also parts should be added/removed right before an explicit refresh ' +
                   'if possible.');
