@@ -1,7 +1,7 @@
 /*!
- * angular-translate - v2.18.1 - 2018-05-19
+ * angular-translate - v2.18.2 - 2020-01-04
  * 
- * Copyright (c) 2018 The angular-translate team, Pascal Precht; Licensed MIT
+ * Copyright (c) 2020 The angular-translate team, Pascal Precht; Licensed MIT
  */
 (function (root, factory) {
   if (typeof define === 'function' && define.amd) {
@@ -199,6 +199,9 @@ function $translatePartialLoader() {
    *
    * @param {string} name A name of the part to add
    * @param {int} [priority=0] Sets the load priority of this part.
+   * @param {string|function} urlTemplate Either a string containing an url pattern (with
+   *                                        '{part}' and '{lang}') or a function(part, lang)
+   *                                        returning a string.
    *
    * @returns {object} $translatePartialLoaderProvider, so this method is chainable
    * @throws {TypeError} The method could throw a **TypeError** if you pass the param
